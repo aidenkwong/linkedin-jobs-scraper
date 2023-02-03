@@ -1,6 +1,7 @@
 import { exit } from "process";
 import puppeteer from "puppeteer";
 import fs from "fs";
+import * as readline from "readline";
 
 const scrapeJobs = async (position: string) => {
   const browser = await puppeteer.launch();
@@ -45,7 +46,15 @@ const scrapeJobs = async (position: string) => {
   });
 
   fs.writeFileSync("output/jobs.json", JSON.stringify(data, null, 2));
-  exit(0);
 };
 
-scrapeJobs("Software Engineer");
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+rl.question("What position are you searching for? ", async (answer) => {
+  await scrapeJobs(answer);
+  rl.close();
+  exit(0);
+});
